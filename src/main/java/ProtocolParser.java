@@ -7,18 +7,19 @@ public class ProtocolParser {
     private ProtocolParser() {}
     public static String parseInput(DataInputStream inputStream) {
         try {
-            char c = (char)inputStream.readByte();
-            if (c != '\u0000') {
+            if (inputStream.readByte() != '\u0000') {
+                char c = (char) inputStream.readByte();
+
                 return switch (c) {
                     case '*' -> parseArray(inputStream);
                     case '$' -> parseString(inputStream);
                     default -> throw new RuntimeException("Unknown character: " + c);
                 };
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            return null;
+        } catch(IOException e){
+                throw new RuntimeException(e);
         }
-        return null;
     }
     private static String parseArray(DataInputStream inputStream) throws IOException {
         int arraySize = parseDigits(inputStream);
