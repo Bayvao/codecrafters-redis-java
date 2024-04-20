@@ -22,17 +22,19 @@ public class Main {
     //      // ensures that we don't run into 'Address already in use' errors
           serverSocket.setReuseAddress(true);
     //      // Wait for connection from client.
-            Socket clientSocket = serverSocket.accept();
 
-          executorService.submit(() -> {
-              try {
-                  handleConcurrentConnections(clientSocket);
-              } catch (IOException e) {
-                  System.out.println(e);
-              }
-          });
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
 
-            clientSocket.close();
+                executorService.submit(() -> {
+                    try {
+                        handleConcurrentConnections(clientSocket);
+                    } catch (IOException e) {
+                        System.out.println(e);
+                    }
+                });
+                clientSocket.close();
+            }
             // OutputStream outputStream = clientSocket.getOutputStream();
             // outputStream.write("+PONG\r\n".getBytes(StandardCharsets.UTF_8));
             // clientSocket.close();
