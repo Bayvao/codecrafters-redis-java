@@ -4,30 +4,25 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ProtocolParser {
-
-    private ProtocolParser() {
-    }
-
-    public static String parseInput(DataInputStream dataInputStream) {
+    private ProtocolParser() {}
+    public static String parseInput(DataInputStream inputStream) {
         try {
-            char c = (char)dataInputStream.readByte();
+            char c = (char)inputStream.readByte();
             return switch (c) {
-                case '*' -> parseArray(dataInputStream);
-                case '$' -> parseString(dataInputStream);
-                default -> throw new RuntimeException();
+                case '*' -> parseArray(inputStream);
+                case '$' -> parseString(inputStream);
+                default -> throw new RuntimeException("Unknown character: " + c);
             };
-        }catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-    private static String parseArray(DataInputStream dataInputStream) throws IOException {
-        int size = parseDigits(dataInputStream);
-        return IntStream.range(0, size)
-                .mapToObj(i -> parseInput(dataInputStream))
-                .collect(Collectors.joining());
+    private static String parseArray(DataInputStream inputStream) throws IOException {
+        int arraySize = parseDigits(inputStream);
+        return IntStream.range(0, arraySize)
+                .mapToObj(i -> parseInput(inputStream))
+                .collect(Collectors.joining(" "));
     }
-
     private static String parseString(DataInputStream inputStream) throws IOException {
         int stringLength = parseDigits(inputStream);
         byte[] bytes = new byte[stringLength];
@@ -35,7 +30,6 @@ public class ProtocolParser {
         inputStream.skipBytes(2); // skip terminating '\r\n'
         return new String(bytes);
     }
-
     private static int parseDigits(DataInputStream inputStream) throws IOException {
         StringBuilder digits = new StringBuilder();
         char c;
@@ -45,6 +39,4 @@ public class ProtocolParser {
         inputStream.readByte(); // skip '\n' after '\r'
         return Integer.parseInt(digits.toString());
     }
-
-
 }
