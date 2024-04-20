@@ -18,6 +18,7 @@ public class ProtocolParser {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
     private static String parseArray(DataInputStream inputStream) throws IOException {
         int arraySize = parseDigits(inputStream);
