@@ -33,13 +33,8 @@ public class Main {
                         System.out.println(e);
                     }
                 });
-                clientSocket.close();
             }
-            // OutputStream outputStream = clientSocket.getOutputStream();
-            // outputStream.write("+PONG\r\n".getBytes(StandardCharsets.UTF_8));
-            // clientSocket.close();
-            //  }
-
+            
         } catch (IOException e) {
           System.out.println("IOException: " + e.getMessage());
         }
