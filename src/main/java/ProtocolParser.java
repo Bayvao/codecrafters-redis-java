@@ -8,11 +8,13 @@ public class ProtocolParser {
     public static String parseInput(DataInputStream inputStream) {
         try {
             char c = (char)inputStream.readByte();
-            return switch (c) {
-                case '*' -> parseArray(inputStream);
-                case '$' -> parseString(inputStream);
-                default -> throw new RuntimeException("Unknown character: " + c);
-            };
+            if (c != '\u0000') {
+                return switch (c) {
+                    case '*' -> parseArray(inputStream);
+                    case '$' -> parseString(inputStream);
+                    default -> throw new RuntimeException("Unknown character: " + c);
+                };
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
