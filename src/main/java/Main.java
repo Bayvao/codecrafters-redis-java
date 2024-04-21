@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +27,8 @@ public class Main {
             while (true) {
                 new ConnectionHandler(serverSocket.accept()).start();
             }
+        } catch (EOFException e) {
+            //this is fine
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
         }
