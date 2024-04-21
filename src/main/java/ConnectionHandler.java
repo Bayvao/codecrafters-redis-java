@@ -1,4 +1,5 @@
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -21,6 +22,8 @@ public class ConnectionHandler extends Thread {
         String response = CommandHandler.handle(parsedCommand);
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
       }
+    } catch (EOFException e) {
+      // Ignore EOF exception
     } catch (IOException e) {
       System.out.println("IOException: " + e.getMessage());
     } finally {

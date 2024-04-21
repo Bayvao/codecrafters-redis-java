@@ -16,6 +16,7 @@ public class CommandHandler {
             case "info" -> DOLLAR + "11" + CRLF_TERMINATOR + "role:master" + CRLF_TERMINATOR;
             default -> throw new RuntimeException("Unknown command: " + command);
         };
+
     }
 
     private static String setCommandData(String[] arguments) {
