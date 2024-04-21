@@ -9,8 +9,7 @@ public class DataModel {
         return setCommandMap.get(key);
     }
 
-    public String setSetCommandMap(Object key, String value) {
+    public void setSetCommandMap(Object key, String value) {
         this.setCommandMap.put(key, value);
-        return "OK";
     }
 }
