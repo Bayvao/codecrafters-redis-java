@@ -29,6 +29,7 @@ public class CommandHandler {
         System.out.println(arguments[1]);
         DataModel dataModel = new DataModel();
         String data = dataModel.getSetCommandMap(arguments[1]);
+        System.out.println(data);
         if (data == null) {
             return DOLLAR + "-1" + CRLF_TERMINATOR;
         }
