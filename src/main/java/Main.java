@@ -28,7 +28,7 @@ public class Main {
 
             // Wait for connection from client.
             while (true) {
-                new ConnectionHandler(serverSocket.accept(), args).start();
+                new ConnectionHandler(serverSocket.accept()).start();
             }
         } catch (EOFException e) {
             //this is fine

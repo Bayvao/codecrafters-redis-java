@@ -5,24 +5,17 @@ public class CommandHandler {
     private static final String PLUS = "+";
     private CommandHandler() {
     }
-    public static String handle(String parsedCommand, String[] args) {
-        if (parsedCommand != null) {
-            String[] arguments = parsedCommand.split(" ");
-            String command = arguments[0].toLowerCase();
-            return switch (command) {
-                case "ping" -> PLUS + "PONG\r\n";
-                case "echo" -> DOLLAR + arguments[1].length() + CRLF_TERMINATOR + arguments[1] + CRLF_TERMINATOR;
-                case "set" -> setCommandData(arguments);
-                case "get" -> getCommandData(arguments);
-                default -> throw new RuntimeException("Unknown command: " + command);
-            };
-        }
-
-        return switch (args[0].toLowerCase()) {
+    public static String handle(String parsedCommand) {
+        String[] arguments = parsedCommand.split(" ");
+        String command = arguments[0].toLowerCase();
+        return switch (command) {
+            case "ping" -> PLUS + "PONG\r\n";
+            case "echo" -> DOLLAR + arguments[1].length() + CRLF_TERMINATOR + arguments[1] + CRLF_TERMINATOR;
+            case "set" -> setCommandData(arguments);
+            case "get" -> getCommandData(arguments);
             case "info" -> DOLLAR + "11" + CRLF_TERMINATOR + "role:master" + CRLF_TERMINATOR;
-            default -> throw new RuntimeException("Unknown command ");
+            default -> throw new RuntimeException("Unknown command: " + command);
         };
-
     }
 
     private static String setCommandData(String[] arguments) {
