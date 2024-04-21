@@ -9,6 +9,7 @@ public class ProtocolParser {
         try {
             char c = (char) inputStream.readByte();
             return switch (c) {
+                case '+' -> parseSimpleString(inputStream);
                 case '*' -> parseArray(inputStream);
                 case '$' -> parseString(inputStream);
                 default -> throw new RuntimeException("Unknown character: " + c);
@@ -17,6 +18,11 @@ public class ProtocolParser {
                 throw new RuntimeException(e);
         }
     }
+
+    private static String parseSimpleString(DataInputStream inputStream) throws IOException {
+        return parseString(inputStream);
+    }
+
     private static String parseArray(DataInputStream inputStream) throws IOException {
         int arraySize = parseDigits(inputStream);
         return IntStream.range(0, arraySize)
