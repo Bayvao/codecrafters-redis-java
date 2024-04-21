@@ -20,7 +20,12 @@ public class ProtocolParser {
     }
 
     private static String parseSimpleString(DataInputStream inputStream) throws IOException {
-        return parseString(inputStream);
+        StringBuilder parsedData = new StringBuilder();
+        char c;
+        while ((c = (char) inputStream.readByte()) != '\r') {
+            parsedData.append((char) c);
+        }
+        return parsedData.toString();
     }
 
     private static String parseArray(DataInputStream inputStream) throws IOException {
