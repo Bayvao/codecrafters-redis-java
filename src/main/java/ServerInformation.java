@@ -4,6 +4,8 @@ public class ServerInformation {
     private String replicaOfHost;
     private String replicaOfPort;
 
+    private String masterReplid;
+
     public String getRole() {
         return role;
     }
@@ -34,5 +36,13 @@ public class ServerInformation {
 
     public void setReplicaOfPort(String replicaOfPort) {
         this.replicaOfPort = replicaOfPort;
+    }
+
+    public String getMasterReplid() {
+        return masterReplid;
+    }
+
+    public void setMasterReplid(String masterReplid) {
+        this.masterReplid = masterReplid;
     }
 }

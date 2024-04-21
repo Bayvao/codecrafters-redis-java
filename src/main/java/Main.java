@@ -1,12 +1,16 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.random.RandomGenerator;
 
 public class Main {
-    private static final ExecutorService executorService =
-      Executors.newCachedThreadPool();
+    private static final ExecutorService executorService = Executors.newCachedThreadPool();
+
+    private static final byte[] REPLICA_ID = new byte[40];
+
     public static void main(String[] args){
         ServerInformation serverInfo = new ServerInformation();
         int port = 6379;
@@ -23,6 +27,9 @@ public class Main {
                 serverInfo.setRole("slave");
                 serverInfo.setReplicaOfHost(args[3]);
                 serverInfo.setReplicaOfPort(args[4]);
+            } else {
+                RandomGenerator.getDefault().nextBytes(REPLICA_ID);
+                serverInfo.setMasterReplid(HexFormat.of().formatHex(REPLICA_ID));
             }
         }
         serverInfo.setPort(port);
