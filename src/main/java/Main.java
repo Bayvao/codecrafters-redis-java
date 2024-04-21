@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args){
         int port = 6379;
 
-        if ("--port".equalsIgnoreCase(args[0])) {
+        if (args.length > 1 && "--port".equalsIgnoreCase(args[0])) {
             port = Integer.parseInt(args[1]);
         }
 
