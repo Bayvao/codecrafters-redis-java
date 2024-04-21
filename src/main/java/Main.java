@@ -68,6 +68,7 @@ public class Main {
                 serverWriter.write(getReplConfBytes1(serverInformation));
 
                 System.out.println("here 2");
+                serverReader.readByte();
                 parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
                 System.out.println("here 3" + parsedMasterResponse);
                 if (parsedMasterResponse.equalsIgnoreCase("ok")) {
