@@ -59,12 +59,28 @@ public class Main {
         ) {
             String parsedMasterResponse;
             serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
-            String command = "ping";
             parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
-            serverWriter.write(ResponseHandler.handle(parsedMasterResponse, serverInformation));
-            serverWriter.write(ResponseHandler.handle(parsedMasterResponse, serverInformation));
-            serverWriter.flush();
-            initiateConnection(serverInformation);
+
+            String[] arguments = parsedMasterResponse.split(" ");
+            String command = arguments[0].toLowerCase();
+
+            if (command.equalsIgnoreCase("pong")) {
+                serverWriter.write(getReplConfBytes1(serverInformation));
+
+                System.out.println("here 2");
+                parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+                if (parsedMasterResponse.equalsIgnoreCase("ok")) {
+
+                    serverWriter.write(getReplConfBytes2(serverInformation));
+                    parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+
+                    if (parsedMasterResponse.equalsIgnoreCase("ok")) {
+                        serverWriter.write(getPsyncConfBytes(serverInformation));
+                    }
+                }
+                serverWriter.flush();
+                initiateConnection(serverInformation);
+            }
         } catch (EOFException e) {
             //this is fine
         } catch (IOException e) {
@@ -92,6 +108,22 @@ public class Main {
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
         }
+    }
+
+    private static byte[] getPsyncConfBytes(ServerInformation serverInformation) {
+        return ("*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n")
+                .getBytes();
+    }
+
+    public static byte[] getReplConfBytes1(ServerInformation serverInformation) {
+        return ("*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n" +
+                serverInformation.getPort() + "\r\n")
+                .getBytes();
+    }
+
+    public static byte[] getReplConfBytes2(ServerInformation serverInformation) {
+        return ("*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n")
+                .getBytes();
     }
 
 }
