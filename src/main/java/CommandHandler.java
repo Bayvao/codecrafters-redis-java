@@ -42,6 +42,7 @@ public class CommandHandler {
                     .append(serverInformation.getMasterReplid())
                     .append(CRLF_TERMINATOR)
                     .append(MASTER_REPLICA_OFFSET);
+            System.out.println(stringBuilder.toString());
         }
         return stringBuilder.toString();
     }
