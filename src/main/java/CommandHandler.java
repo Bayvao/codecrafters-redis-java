@@ -44,7 +44,11 @@ public class CommandHandler {
                     .append(MASTER_REPLICA_OFFSET);
             System.out.println(stringBuilder.toString());
         }
-        return stringBuilder.toString();
+        return bulkString(stringBuilder.toString());
+    }
+
+    private static String bulkString(String s) {
+        return "$%d\r\n%s\r\n".formatted(s.length(), s);
     }
 
     private static String setCommandData(String[] arguments) {
