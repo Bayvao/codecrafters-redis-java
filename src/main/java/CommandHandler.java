@@ -33,7 +33,7 @@ public class CommandHandler {
         stringBuilder.append(ROLE)
                 .append(serverInformation.getRole())
                 .append(CRLF_TERMINATOR);
-        if (serverInformation.getReplicaOfHost() == null && serverInformation.getReplicaOfPort() == null) {
+        if (serverInformation.getMasterHost() == null && serverInformation.getMasterPort() == null) {
             stringBuilder.append(MASTER_REPLICA_ID)
                     .append(serverInformation.getMasterReplid())
                     .append(CRLF_TERMINATOR)
