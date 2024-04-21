@@ -18,17 +18,19 @@ public class CommandHandler {
     }
 
     private static String setCommandData(String[] arguments) {
+        System.out.println(arguments[1] + " " + arguments[2]);
         DataModel dataModel = new DataModel();
         dataModel.setSetCommandMap(arguments[1], arguments[2]);
         return PLUS + "OK" + CRLF_TERMINATOR;
     }
 
     private static String getCommandData(String[] arguments) {
+        System.out.println(arguments[1]);
         DataModel dataModel = new DataModel();
         String data = dataModel.getSetCommandMap(arguments[1]);
-        if (data != null) {
-            return DOLLAR + data.length() + CRLF_TERMINATOR + data + CRLF_TERMINATOR;
+        if (data == null) {
+            return DOLLAR + "-1" + CRLF_TERMINATOR;
         }
-        return DOLLAR + "-1" + CRLF_TERMINATOR;
+        return DOLLAR + data.length() + CRLF_TERMINATOR + data + CRLF_TERMINATOR;
     }
 }
