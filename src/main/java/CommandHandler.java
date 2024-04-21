@@ -1,3 +1,4 @@
+import java.util.Locale;
 import java.util.random.RandomGenerator;
 
 public class CommandHandler {
@@ -21,6 +22,7 @@ public class CommandHandler {
             case "set" -> setCommandData(arguments);
             case "get" -> getCommandData(arguments);
             case "info" -> getServerInformation(serverInformation);
+            case "replconf" -> PLUS + "OK\r\n";
             default -> throw new RuntimeException("Unknown command: " + command);
         };
 

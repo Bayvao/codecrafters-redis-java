@@ -24,7 +24,6 @@ public class ProtocolParser {
         StringBuilder parsedData = new StringBuilder();
         char c;
         while ((c = (char) inputStream.readByte()) != '\r') {
-            System.out.println("here 4: " + c);
             parsedData.append((char) c);
         }
         return parsedData.toString();
