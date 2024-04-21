@@ -53,11 +53,13 @@ public class Main {
         // initiating slave to master connection and sending a PING to establish the connection
         try (Socket serverSocket = new Socket(serverInformation.getMasterHost(),
                 Integer.parseInt(serverInformation.getMasterPort()));
-             BufferedReader serverReader =
-                     new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+             DataInputStream serverReader =
+                     new DataInputStream(serverSocket.getInputStream());
              OutputStream serverWriter = serverSocket.getOutputStream()
         ) {
             serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
+            String parsedMasterResponse = ProtocolParser.parseInput(serverReader);
+            serverWriter.write(ResponseHandler.handle(parsedMasterResponse, serverInformation));
             serverWriter.flush();
             initiateConnection(serverInformation);
         } catch (EOFException e) {
