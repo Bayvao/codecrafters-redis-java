@@ -30,10 +30,7 @@ public class CommandHandler {
 
         System.out.println(serverInformation.toString());
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(DOLLAR)
-                .append((ROLE.length() + serverInformation.getRole().length()))
-                .append(CRLF_TERMINATOR)
-                .append(ROLE)
+        stringBuilder.append(ROLE)
                 .append(serverInformation.getRole())
                 .append(CRLF_TERMINATOR);
         if (serverInformation.getReplicaOfHost() == null && serverInformation.getReplicaOfPort() == null) {
