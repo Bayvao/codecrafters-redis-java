@@ -15,14 +15,15 @@ public class CommandHandler {
     }
     public static String handle(String parsedCommand, ServerInformation serverInformation) {
         String[] arguments = parsedCommand.split(" ");
-        String command = arguments[0].toLowerCase();
+        String command = arguments[0].toUpperCase();
         return switch (command) {
-            case "ping" -> PLUS + "PONG\r\n";
-            case "echo" -> DOLLAR + arguments[1].length() + CRLF_TERMINATOR + arguments[1] + CRLF_TERMINATOR;
-            case "set" -> setCommandData(arguments);
-            case "get" -> getCommandData(arguments);
-            case "info" -> getServerInformation(serverInformation);
-            case "replconf" -> PLUS + "OK\r\n";
+            case "PING" -> PLUS + "PONG\r\n";
+            case "ECHO" -> DOLLAR + arguments[1].length() + CRLF_TERMINATOR + arguments[1] + CRLF_TERMINATOR;
+            case "SET" -> setCommandData(arguments);
+            case "GET" -> getCommandData(arguments);
+            case "INFO" -> getServerInformation(serverInformation);
+            case "REPLCONF" -> PLUS + "OK\r\n";
+            case "PSYNC" -> PLUS + "FULLRESYNC " + serverInformation.getMasterReplid() + " 0" + CRLF_TERMINATOR;
             default -> throw new RuntimeException("Unknown command: " + command);
         };
 
