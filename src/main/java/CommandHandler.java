@@ -18,7 +18,15 @@ public class CommandHandler {
     }
 
     private static String setCommandData(String[] arguments) {
-        Cache.setData(arguments[1], arguments[2]);
+        if (arguments.length > 3) {
+            String argument = arguments[3].toLowerCase();
+            if (argument.equalsIgnoreCase("px")) {
+                Long expiration = Long.valueOf(arguments[4]);
+                Cache.setDataWithTtl(arguments[1], arguments[2], expiration);
+            }
+        } else {
+            Cache.setData(arguments[1], arguments[2]);
+        }
         return PLUS + "OK" + CRLF_TERMINATOR;
     }
 

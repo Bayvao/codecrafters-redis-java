@@ -12,17 +12,23 @@ public class Cache {
         if (storageData == null)
             return null;
 
-        if (storageData.expiry().isBefore(Instant.now()))
+        if (storageData.expiry().isBefore(Instant.now())){
+            remove(key);
             return null;
+        }
 
         return storageData.value();
     }
 
     public static void setData(Object key, String value) {
-        setDataWithTtl(key, value, Instant.MAX);
+        cache.put(key, new StorageData(value, Instant.MAX));
     }
 
-    public static void setDataWithTtl(Object key, String value, Instant expiration) {
-        cache.put(key, new StorageData(value, expiration));
+    public static void setDataWithTtl(Object key, String value, Long expiration) {
+        cache.put(key, new StorageData(value, Instant.now().plusMillis(expiration)));
+    }
+
+    public static void remove(Object key) {
+        cache.remove(key);
     }
 }
