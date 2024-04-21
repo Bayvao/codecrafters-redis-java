@@ -1,8 +1,8 @@
 public class ServerInformation {
     private String role;
     private int port;
-    private String replicaOfHost;
-    private String replicaOfPort;
+    private String masterHost;
+    private String masterPort;
 
     private String masterReplid;
 
@@ -22,20 +22,20 @@ public class ServerInformation {
         this.port = port;
     }
 
-    public String getReplicaOfHost() {
-        return replicaOfHost;
+    public String getMasterHost() {
+        return masterHost;
     }
 
-    public void setReplicaOfHost(String replicaOfHost) {
-        this.replicaOfHost = replicaOfHost;
+    public void setMasterHost(String masterHost) {
+        this.masterHost = masterHost;
     }
 
-    public String getReplicaOfPort() {
-        return replicaOfPort;
+    public String getMasterPort() {
+        return masterPort;
     }
 
-    public void setReplicaOfPort(String replicaOfPort) {
-        this.replicaOfPort = replicaOfPort;
+    public void setMasterPort(String masterPort) {
+        this.masterPort = masterPort;
     }
 
     public String getMasterReplid() {
@@ -44,16 +44,5 @@ public class ServerInformation {
 
     public void setMasterReplid(String masterReplid) {
         this.masterReplid = masterReplid;
-    }
-
-    @Override
-    public String toString() {
-        return "ServerInformation{" +
-                "role='" + role + '\'' +
-                ", port=" + port +
-                ", replicaOfHost='" + replicaOfHost + '\'' +
-                ", replicaOfPort='" + replicaOfPort + '\'' +
-                ", masterReplid='" + masterReplid + '\'' +
-                '}';
     }
 }

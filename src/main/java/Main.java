@@ -1,5 +1,7 @@
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.HexFormat;
 import java.util.concurrent.ExecutorService;
@@ -25,8 +27,8 @@ public class Main {
 
             if (argumentLength > 2 && "--replicaof".equalsIgnoreCase(args[2])) {
                 serverInfo.setRole("slave");
-                serverInfo.setReplicaOfHost(args[3]);
-                serverInfo.setReplicaOfPort(args[4]);
+                serverInfo.setMasterHost(args[3]);
+                serverInfo.setMasterPort(args[4]);
             }
         }
         serverInfo.setPort(port);
@@ -38,7 +40,38 @@ public class Main {
 
 
         System.out.println("Logs from your program will appear here!");
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+
+        if (serverInfo.getRole().equalsIgnoreCase("slave")) {
+            initiateSlaveConnection(serverInfo);
+        } else {
+            initiateConnection(serverInfo);
+        }
+    }
+
+    private static void initiateSlaveConnection(ServerInformation serverInformation) {
+
+        // initiating slave to master connection and sending a PING to establish the connection
+        try (Socket serverSocket = new Socket(serverInformation.getMasterHost(),
+                Integer.parseInt(serverInformation.getMasterPort()));
+             BufferedReader serverReader =
+                     new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+             OutputStream serverWriter = serverSocket.getOutputStream()
+        ) {
+            serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
+            serverWriter.flush();
+            initiateConnection(serverInformation);
+        } catch (EOFException e) {
+            //this is fine
+        } catch (IOException e) {
+            System.out.println(
+                    "Exception occurred when tried to connect to the server: " +
+                            e.getMessage());
+            System.out.println("IOException: " + e.getMessage());
+        }
+    }
+
+    private static void initiateConnection(ServerInformation serverInfo) {
+        try (ServerSocket serverSocket = new ServerSocket(serverInfo.getPort())) {
 
             // Since the tester restarts your program quite often, setting SO_REUSEADDR
             // ensures that we don't run into 'Address already in use' errors
@@ -55,21 +88,5 @@ public class Main {
             System.out.println("IOException: " + e.getMessage());
         }
     }
-
-  /*
-    private static void handleConcurrentConnections(Socket clientSocket) throws IOException {
-        var br = new BufferedReader(
-                new InputStreamReader(clientSocket.getInputStream()));
-        OutputStream outputStream = clientSocket.getOutputStream();
-        String command;
-        while ((command = br.readLine()) != null) {
-            System.out.println("command: " + command);
-            if (command.equalsIgnoreCase("ping")) {
-                outputStream.write("+PONG\r\n".getBytes(StandardCharsets.UTF_8));
-            }
-        }
-        outputStream.flush();
-    }
-   */
 
 }

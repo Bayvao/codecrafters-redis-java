@@ -34,12 +34,10 @@ public class CommandHandler {
                 .append(serverInformation.getRole())
                 .append(CRLF_TERMINATOR);
         if (serverInformation.getReplicaOfHost() == null && serverInformation.getReplicaOfPort() == null) {
-            System.out.println("entered");
             stringBuilder.append(MASTER_REPLICA_ID)
                     .append(serverInformation.getMasterReplid())
                     .append(CRLF_TERMINATOR)
                     .append(MASTER_REPLICA_OFFSET);
-            System.out.println(stringBuilder.toString());
         }
         return bulkString(stringBuilder.toString());
     }
