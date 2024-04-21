@@ -6,8 +6,10 @@ import java.nio.charset.StandardCharsets;
 
 public class ConnectionHandler extends Thread {
   private final Socket socket;
-  public ConnectionHandler(Socket socket) {
+  private final String[] args;
+  public ConnectionHandler(Socket socket, String[] args) {
     this.socket = socket;
+    this.args = args;
   }
 
   @Override
@@ -16,8 +18,12 @@ public class ConnectionHandler extends Thread {
              new DataInputStream(socket.getInputStream());
          OutputStream outputStream = socket.getOutputStream()) {
       while (true) {
-        String parsedCommand = ProtocolParser.parseInput(dataInputStream);
-        String response = CommandHandler.handle(parsedCommand);
+        String parsedCommand = null;
+        if (!(args.length > 0)) {
+          parsedCommand = ProtocolParser.parseInput(dataInputStream);
+        }
+
+        String response = CommandHandler.handle(parsedCommand, args);
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
       }
     } catch (IOException e) {
