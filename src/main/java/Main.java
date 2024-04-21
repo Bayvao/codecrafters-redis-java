@@ -60,6 +60,9 @@ public class Main {
             serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
             String parsedMasterResponse = ProtocolParser.parseInput(serverReader);
             serverWriter.write(ResponseHandler.handle(parsedMasterResponse, serverInformation));
+            ProtocolParser.parseInput(serverReader);
+            String parsedResponse = ProtocolParser.parseInput(serverReader);
+            serverWriter.write(ResponseHandler.handle(parsedResponse, serverInformation));
             serverWriter.flush();
             initiateConnection(serverInformation);
         } catch (EOFException e) {

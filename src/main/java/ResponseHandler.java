@@ -15,9 +15,15 @@ public class ResponseHandler {
         String command = arguments[0].toLowerCase();
         return switch (command) {
             case "pong" -> getReplConfBytes(serverInformation);
+            case "ok" -> getPsyncConfBytes(serverInformation);
             default -> throw new RuntimeException("Unknown command: " + command);
         };
 
+    }
+
+    private static byte[] getPsyncConfBytes(ServerInformation serverInformation) {
+        return ("*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n")
+                .getBytes();
     }
 
     public static byte[] getReplConfBytes(ServerInformation serverInformation) {
