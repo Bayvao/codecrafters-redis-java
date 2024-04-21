@@ -26,7 +26,7 @@ public class CommandHandler {
     private static String getCommandData(String[] arguments) {
         DataModel dataModel = new DataModel();
         String data = dataModel.getSetCommandMap(arguments[1]);
-        if (data != null && !data.isEmpty()) {
+        if (data != null) {
             return DOLLAR + data.length() + CRLF_TERMINATOR + data + CRLF_TERMINATOR;
         }
         return DOLLAR + "-1" + CRLF_TERMINATOR;
