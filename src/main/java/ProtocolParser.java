@@ -23,8 +23,8 @@ public class ProtocolParser {
     private static String parseSimpleString(DataInputStream inputStream) throws IOException {
         StringBuilder parsedData = new StringBuilder();
         char c;
-        System.out.println(c);
         while ((c = (char) inputStream.readByte()) != '\r') {
+            System.out.println("here 4: " + c);
             parsedData.append((char) c);
         }
         return parsedData.toString();
