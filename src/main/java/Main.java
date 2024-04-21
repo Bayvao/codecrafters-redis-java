@@ -11,23 +11,29 @@ import java.util.concurrent.Executors;
 public class Main {
     private static final ExecutorService executorService =
       Executors.newCachedThreadPool();
-  public static void main(String[] args){
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
-    System.out.println("Logs from your program will appear here!");
-    try (ServerSocket serverSocket = new ServerSocket(6379)) {
-        // Since the tester restarts your program quite often, setting SO_REUSEADDR
-        // ensures that we don't run into 'Address already in use' errors
+    public static void main(String[] args){
+        int port = 6379;
 
-        serverSocket.setReuseAddress(true);
-
-        // Wait for connection from client.
-        while (true) {
-            new ConnectionHandler(serverSocket.accept()).start();
+        if ("--port".equalsIgnoreCase(args[0])) {
+            port = Integer.parseInt(args[1]);
         }
-    } catch (IOException e) {
-        System.out.println("IOException: " + e.getMessage());
+
+        System.out.println("Logs from your program will appear here!");
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+
+            // Since the tester restarts your program quite often, setting SO_REUSEADDR
+            // ensures that we don't run into 'Address already in use' errors
+
+            serverSocket.setReuseAddress(true);
+
+            // Wait for connection from client.
+            while (true) {
+                new ConnectionHandler(serverSocket.accept()).start();
+            }
+        } catch (IOException e) {
+            System.out.println("IOException: " + e.getMessage());
+        }
     }
-  }
 
   /*
     private static void handleConcurrentConnections(Socket clientSocket) throws IOException {
