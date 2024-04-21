@@ -21,6 +21,7 @@ public class CommandHandler {
         System.out.println(arguments[1] + " " + arguments[2]);
         DataModel dataModel = new DataModel();
         dataModel.setSetCommandMap(arguments[1], arguments[2]);
+        System.out.println(dataModel.getSetCommandMap(arguments[1]));
         return PLUS + "OK" + CRLF_TERMINATOR;
     }
 

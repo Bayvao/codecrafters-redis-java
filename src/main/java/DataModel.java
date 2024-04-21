@@ -1,9 +1,10 @@
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class DataModel {
-    private ConcurrentHashMap<Object, String> setCommandMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<Object, String> setCommandMap = new ConcurrentHashMap<>();
 
     public String getSetCommandMap(String key) {
         return setCommandMap.get(key);
