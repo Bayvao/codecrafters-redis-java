@@ -8,7 +8,6 @@ public class ProtocolParser {
     public static String parseInput(DataInputStream inputStream) {
         try {
             char c = (char) inputStream.readByte();
-            System.out.println(c);
             return switch (c) {
                 case '+' -> parseSimpleString(inputStream);
                 case '*' -> parseArray(inputStream);

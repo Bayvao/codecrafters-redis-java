@@ -60,9 +60,13 @@ public class Main {
             String parsedMasterResponse;
             serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
             parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
+            System.out.println("here 1");
             serverWriter.write(ResponseHandler.handle(parsedMasterResponse, serverInformation));
+            System.out.println("here 2");
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+            System.out.println("here 3");
             parsedMasterResponse = ProtocolParser.parseInput(serverReader); //OK
+            System.out.println("here 4");
             serverWriter.write(ResponseHandler.handle(parsedMasterResponse, serverInformation));
             serverWriter.flush();
             initiateConnection(serverInformation);
