@@ -2,13 +2,14 @@ public class CommandHandler {
 
     private static final String CRLF_TERMINATOR = "\r\n";
     private static final String DOLLAR = "$";
+    private static final String PLUS = "+";
     private CommandHandler() {
     }
     public static String handle(String parsedCommand) {
         String[] arguments = parsedCommand.split(" ");
         String command = arguments[0].toLowerCase();
         return switch (command) {
-            case "ping" -> "+PONG\r\n";
+            case "ping" -> PLUS + "PONG\r\n";
             case "echo" -> DOLLAR + arguments[1].length() + CRLF_TERMINATOR + arguments[1] + CRLF_TERMINATOR;
             case "set" -> setCommandData(arguments);
             case "get" -> getCommandData(arguments);
@@ -19,7 +20,7 @@ public class CommandHandler {
     private static String setCommandData(String[] arguments) {
         DataModel dataModel = new DataModel();
         dataModel.setSetCommandMap(arguments[1], arguments[2]);
-        return DOLLAR + "OK" + CRLF_TERMINATOR;
+        return PLUS + "OK" + CRLF_TERMINATOR;
     }
 
     private static String getCommandData(String[] arguments) {
