@@ -57,11 +57,13 @@ public class Main {
                      new DataInputStream(serverSocket.getInputStream());
              OutputStream serverWriter = serverSocket.getOutputStream()
         ) {
+            String parsedMasterResponse;
             serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
-            String parsedMasterResponse = ProtocolParser.parseInput(serverReader);
+            parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
             serverWriter.write(ResponseHandler.handle(parsedMasterResponse, serverInformation));
-            String parsedResponse = ProtocolParser.parseInput(serverReader);
-            serverWriter.write(ResponseHandler.handle(parsedResponse, serverInformation));
+            parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+            parsedMasterResponse = ProtocolParser.parseInput(serverReader); //OK
+            serverWriter.write(ResponseHandler.handle(parsedMasterResponse, serverInformation));
             serverWriter.flush();
             initiateConnection(serverInformation);
         } catch (EOFException e) {
