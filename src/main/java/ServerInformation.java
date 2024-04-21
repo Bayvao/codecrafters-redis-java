@@ -45,4 +45,15 @@ public class ServerInformation {
     public void setMasterReplid(String masterReplid) {
         this.masterReplid = masterReplid;
     }
+
+    @Override
+    public String toString() {
+        return "ServerInformation{" +
+                "role='" + role + '\'' +
+                ", port=" + port +
+                ", replicaOfHost='" + replicaOfHost + '\'' +
+                ", replicaOfPort='" + replicaOfPort + '\'' +
+                ", masterReplid='" + masterReplid + '\'' +
+                '}';
+    }
 }

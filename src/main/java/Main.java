@@ -27,12 +27,14 @@ public class Main {
                 serverInfo.setRole("slave");
                 serverInfo.setReplicaOfHost(args[3]);
                 serverInfo.setReplicaOfPort(args[4]);
-            } else {
-                RandomGenerator.getDefault().nextBytes(REPLICA_ID);
-                serverInfo.setMasterReplid(HexFormat.of().formatHex(REPLICA_ID));
             }
         }
         serverInfo.setPort(port);
+
+        if (serverInfo.getRole().equalsIgnoreCase("master")) {
+            RandomGenerator.getDefault().nextBytes(REPLICA_ID);
+            serverInfo.setMasterReplid(HexFormat.of().formatHex(REPLICA_ID));
+        }
 
 
         System.out.println("Logs from your program will appear here!");

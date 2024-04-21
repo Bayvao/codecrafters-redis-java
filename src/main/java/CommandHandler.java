@@ -28,6 +28,7 @@ public class CommandHandler {
 
     private static String getServerInformation(ServerInformation serverInformation) {
 
+        System.out.println(serverInformation.toString());
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(DOLLAR)
                 .append((ROLE.length() + serverInformation.getRole().length()))
