@@ -63,6 +63,7 @@ public class Main {
             System.out.println("here 1");
             serverWriter.write(ResponseHandler.handle(parsedMasterResponse, serverInformation));
             System.out.println("here 2");
+            System.out.println(serverReader.readAllBytes().toString());
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
             System.out.println("here 3");
             parsedMasterResponse = ProtocolParser.parseInput(serverReader); //OK
