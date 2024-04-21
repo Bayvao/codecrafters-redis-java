@@ -1,7 +1,5 @@
 import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,13 +8,25 @@ public class Main {
     private static final ExecutorService executorService =
       Executors.newCachedThreadPool();
     public static void main(String[] args){
+        ServerInformation serverInfo = new ServerInformation();
         int port = 6379;
+        serverInfo.setRole("master");
 
-        System.out.println(Arrays.toString(args));
+        int argumentLength = args.length;
 
-        if (args.length > 1 && "--port".equalsIgnoreCase(args[0])) {
-            port = Integer.parseInt(args[1]);
+        if (argumentLength > 1) {
+            if ("--port".equalsIgnoreCase(args[0])) {
+                port = Integer.parseInt(args[1]);
+            }
+
+            if (argumentLength > 2 && "--replicaof".equalsIgnoreCase(args[2])) {
+                serverInfo.setRole("slave");
+                serverInfo.setReplicaOfHost(args[3]);
+                serverInfo.setReplicaOfPort(args[4]);
+            }
         }
+        serverInfo.setPort(port);
+
 
         System.out.println("Logs from your program will appear here!");
         try (ServerSocket serverSocket = new ServerSocket(port)) {
@@ -28,7 +38,7 @@ public class Main {
 
             // Wait for connection from client.
             while (true) {
-                new ConnectionHandler(serverSocket.accept()).start();
+                new ConnectionHandler(serverSocket.accept(), serverInfo).start();
             }
         } catch (EOFException e) {
             //this is fine

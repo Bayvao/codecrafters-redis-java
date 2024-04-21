@@ -7,9 +7,11 @@ import java.nio.charset.StandardCharsets;
 
 public class ConnectionHandler extends Thread {
   private final Socket socket;
+  private final ServerInformation serverInformation;
 
-  public ConnectionHandler(Socket socket) {
+  public ConnectionHandler(Socket socket, ServerInformation serverInformation) {
     this.socket = socket;
+    this.serverInformation =  serverInformation;
   }
 
   @Override
@@ -19,7 +21,7 @@ public class ConnectionHandler extends Thread {
          OutputStream outputStream = socket.getOutputStream()) {
       while (true) {
         String parsedCommand = ProtocolParser.parseInput(dataInputStream);
-        String response = CommandHandler.handle(parsedCommand);
+        String response = CommandHandler.handle(parsedCommand, serverInformation);
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
       }
     } catch (EOFException e) {

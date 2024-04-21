@@ -5,7 +5,7 @@ public class CommandHandler {
     private static final String PLUS = "+";
     private CommandHandler() {
     }
-    public static String handle(String parsedCommand) {
+    public static String handle(String parsedCommand, ServerInformation serverInformation) {
         String[] arguments = parsedCommand.split(" ");
         String command = arguments[0].toLowerCase();
         return switch (command) {
@@ -13,7 +13,7 @@ public class CommandHandler {
             case "echo" -> DOLLAR + arguments[1].length() + CRLF_TERMINATOR + arguments[1] + CRLF_TERMINATOR;
             case "set" -> setCommandData(arguments);
             case "get" -> getCommandData(arguments);
-            case "info" -> DOLLAR + "11" + CRLF_TERMINATOR + "role:master" + CRLF_TERMINATOR;
+            case "info" -> DOLLAR + "11" + CRLF_TERMINATOR + "role" + serverInformation.getRole() + CRLF_TERMINATOR;
             default -> throw new RuntimeException("Unknown command: " + command);
         };
 
