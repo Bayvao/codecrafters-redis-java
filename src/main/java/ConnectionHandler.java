@@ -25,12 +25,14 @@ public class ConnectionHandler extends Thread {
          OutputStream outputStream = socket.getOutputStream()) {
       while (true) {
         String parsedCommand = ProtocolParser.parseInput(dataInputStream);
+
+        System.out.printf("command received: %s\n", parsedCommand);
         String response = CommandHandler.handle(parsedCommand, serverInformation);
+
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
+
         if(response.contains("FULLRESYNC")) {
-          //serverInformation.setReplicaSet(this.socket.getPort());
-          System.out.println(this.socket.getPort());
-          System.out.println(this.socket.getLocalPort());
+          System.out.println(socket.getRemoteSocketAddress());
           outputStream.write(sendEmptyRDBFile());
         }
       }

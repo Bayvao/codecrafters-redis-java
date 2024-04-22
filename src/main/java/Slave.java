@@ -15,31 +15,7 @@ public class Slave {
                      new DataInputStream(serverSocket.getInputStream());
              OutputStream serverWriter = serverSocket.getOutputStream()
         ) {
-            String parsedMasterResponse;
-            serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
-            parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
-
-            String[] arguments = parsedMasterResponse.split(" ");
-            String command = arguments[0].toLowerCase();
-
-            if (command.equalsIgnoreCase("pong")) {
-                serverWriter.write(getReplConfBytes1(serverInformation));
-
-                serverReader.readByte();
-                parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
-                if (parsedMasterResponse.equalsIgnoreCase("ok")) {
-
-                    serverWriter.write(getReplConfBytes2(serverInformation));
-                    serverReader.readByte();
-                    parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
-
-                    if (parsedMasterResponse.equalsIgnoreCase("ok")) {
-                        serverWriter.write(getPsyncConfBytes(serverInformation));
-                    }
-                }
-                serverWriter.flush();
-                Connection.initiateConnection(serverInformation);
-            }
+            initiateHandshakeWithMaster(serverInformation, serverWriter, serverReader);
         } catch (EOFException e) {
             //this is fine
         } catch (IOException e) {
@@ -50,6 +26,33 @@ public class Slave {
         }
     }
 
+    private static void initiateHandshakeWithMaster(ServerInformation serverInformation, OutputStream serverWriter, DataInputStream serverReader) throws IOException {
+        String parsedMasterResponse;
+        serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
+        parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
+
+        String[] arguments = parsedMasterResponse.split(" ");
+        String command = arguments[0].toLowerCase();
+
+        if (command.equalsIgnoreCase("pong")) {
+            serverWriter.write(getReplConfBytes1(serverInformation));
+
+            serverReader.readByte();
+            parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+            if (parsedMasterResponse.equalsIgnoreCase("ok")) {
+
+                serverWriter.write(getReplConfBytes2(serverInformation));
+                serverReader.readByte();
+                parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+
+                if (parsedMasterResponse.equalsIgnoreCase("ok")) {
+                    serverWriter.write(getPsyncConfBytes(serverInformation));
+                }
+            }
+            serverWriter.flush();
+            Connection.initiateConnection(serverInformation);
+        }
+    }
 
 
     private static byte[] getPsyncConfBytes(ServerInformation serverInformation) {

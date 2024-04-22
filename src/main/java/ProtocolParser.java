@@ -14,7 +14,10 @@ public class ProtocolParser {
                 case '$' -> parseString(inputStream);
                 default -> throw new RuntimeException("Unknown character: " + c);
             };
-        } catch(IOException e){
+        } catch (EOFException e){
+            throw new RuntimeException(e.getMessage());
+        }
+        catch(IOException e){
                 throw new RuntimeException(e);
         }
     }
