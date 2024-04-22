@@ -3,7 +3,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class ConnectionHandler extends Thread {
   private final Socket socket;
@@ -44,7 +46,11 @@ public class ConnectionHandler extends Thread {
   }
 
   private byte[] sendEmptyRDBFile() {
-    return ("$" + EMPTY_RDB_FILE_BASE64_ENCODED.length() + "\r\n" + EMPTY_RDB_FILE_BASE64_ENCODED)
-            .getBytes(StandardCharsets.UTF_8);
+    byte[] emptyRdb = Base64.getDecoder().decode(EMPTY_RDB_FILE_BASE64_ENCODED);
+    byte[] fileSize = "$%s\r\n".formatted(emptyRdb.length).getBytes(StandardCharsets.UTF_8);
+    ByteBuffer buffer = ByteBuffer.wrap(new byte[fileSize.length + emptyRdb.length]);
+    buffer.put(fileSize);
+    buffer.put(emptyRdb);
+    return buffer.array();
   }
 }
