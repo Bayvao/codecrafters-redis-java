@@ -44,7 +44,7 @@ public class ConnectionHandler extends Thread {
   }
 
   private byte[] sendEmptyRDBFile() {
-    return ("$0\r\n" + EMPTY_RDB_FILE_BASE64_ENCODED)
+    return ("$" + EMPTY_RDB_FILE_BASE64_ENCODED.length() + "\r\n" + EMPTY_RDB_FILE_BASE64_ENCODED)
             .getBytes(StandardCharsets.UTF_8);
   }
 }
