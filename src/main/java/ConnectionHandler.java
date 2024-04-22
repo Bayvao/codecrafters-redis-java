@@ -9,6 +9,8 @@ public class ConnectionHandler extends Thread {
   private final Socket socket;
   private final ServerInformation serverInformation;
 
+  private static final String EMPTY_RDB_FILE_BASE64_ENCODED = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
+
   public ConnectionHandler(Socket socket, ServerInformation serverInformation) {
     this.socket = socket;
     this.serverInformation =  serverInformation;
@@ -23,6 +25,9 @@ public class ConnectionHandler extends Thread {
         String parsedCommand = ProtocolParser.parseInput(dataInputStream);
         String response = CommandHandler.handle(parsedCommand, serverInformation);
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
+        if(response.contains("FULLRESYNC")) {
+          outputStream.write(sendEmptyRDBFile());
+        }
       }
     } catch (EOFException e) {
       // Ignore EOF exception
@@ -36,5 +41,10 @@ public class ConnectionHandler extends Thread {
         System.out.println("IOException: " + e.getMessage());
       }
     }
+  }
+
+  private byte[] sendEmptyRDBFile() {
+    return ("$0\r\n" + EMPTY_RDB_FILE_BASE64_ENCODED)
+            .getBytes(StandardCharsets.UTF_8);
   }
 }
