@@ -28,6 +28,9 @@ public class ConnectionHandler extends Thread {
         String response = CommandHandler.handle(parsedCommand, serverInformation);
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
         if(response.contains("FULLRESYNC")) {
+          //serverInformation.setReplicaSet(this.socket.getPort());
+          System.out.println(this.socket.getPort());
+          System.out.println(this.socket.getLocalPort());
           outputStream.write(sendEmptyRDBFile());
         }
       }

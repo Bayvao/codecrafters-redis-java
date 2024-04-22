@@ -1,10 +1,14 @@
+import java.net.Socket;
+import java.util.Set;
+
 public class ServerInformation {
     private String role;
     private int port;
     private String masterHost;
     private String masterPort;
-
     private String masterReplid;
+
+    private Set<Socket> replicaSet;
 
     public String getRole() {
         return role;
@@ -44,5 +48,13 @@ public class ServerInformation {
 
     public void setMasterReplid(String masterReplid) {
         this.masterReplid = masterReplid;
+    }
+
+    public Set<Socket> getReplicaSet() {
+        return replicaSet;
+    }
+
+    public void setReplicaSet(Socket socket) {
+        this.replicaSet.add(socket);
     }
 }
