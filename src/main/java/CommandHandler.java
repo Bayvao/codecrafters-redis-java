@@ -80,7 +80,7 @@ public class CommandHandler {
         }
         System.out.println("Data inserted in role: " + serverInformation.getRole() + ", data: " + Cache.getCache());
 
-        if (serverInformation.getRole().equalsIgnoreCase("master")) {
+        if (!serverInformation.getReplicaSet().isEmpty()) {
 
             System.out.println("Sending data to replicas");
 
