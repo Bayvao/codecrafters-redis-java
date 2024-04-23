@@ -20,6 +20,9 @@ public class ConnectionHandler extends Thread {
 
   @Override
   public void run() {
+
+    System.out.println("Server started");
+
     try (DataInputStream dataInputStream =
              new DataInputStream(socket.getInputStream());
          OutputStream outputStream = socket.getOutputStream()) {

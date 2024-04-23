@@ -57,7 +57,6 @@ public class SlaveInitializer extends Thread {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
                 }
             }
-            System.out.println("Starting replica server");
             serverWriter.flush();
         }
     }
