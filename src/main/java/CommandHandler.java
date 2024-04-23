@@ -23,6 +23,9 @@ public class CommandHandler {
     }
     public static String handle(String parsedCommand, ServerInformation serverInformation) {
         String[] arguments = parsedCommand.split(" ");
+        if (serverInformation.getRole().equalsIgnoreCase("slave")) {
+            System.out.println("In replica");
+        }
         String command = arguments[0].toUpperCase();
         return switch (command) {
             case "PING" -> PLUS + "PONG\r\n";
