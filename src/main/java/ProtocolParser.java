@@ -53,4 +53,18 @@ public class ProtocolParser {
         inputStream.readByte(); // skip '\n' after '\r'
         return Integer.parseInt(digits.toString());
     }
+
+    public static String decodeRDbFile(DataInputStream stream) throws IOException {
+        char ch = (char) stream.readByte();
+
+        if (ch != '$') throw new RuntimeException(String.format("Unexpected start of RDB file: %s", ch));
+
+        int stringLength = parseDigits(stream);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < stringLength; i++) {
+            stringBuilder.append((char) stream.readByte());
+        }
+
+        return stringBuilder.toString();
+    }
 }

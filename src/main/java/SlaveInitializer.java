@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class SlaveInitializer extends Thread {
 
-    private ServerInformation serverInformation;
+    private final ServerInformation serverInformation;
 
     public SlaveInitializer(ServerInformation serverInformation) {
         this.serverInformation = serverInformation;
@@ -34,7 +34,9 @@ public class SlaveInitializer extends Thread {
         }
     }
 
-    private static void initiateHandshakeWithMaster(ServerInformation serverInformation, OutputStream serverWriter, DataInputStream serverReader) throws IOException {
+    private static void initiateHandshakeWithMaster(ServerInformation serverInformation,
+                                                    OutputStream serverWriter,
+                                                    DataInputStream serverReader) throws IOException {
         String parsedMasterResponse;
         serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
         parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
@@ -57,6 +59,10 @@ public class SlaveInitializer extends Thread {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
                 }
             }
+
+            String rDbFile = ProtocolParser.decodeRDbFile(serverReader);
+            System.out.printf("Received RDB File: %s", rDbFile);
+            System.out.println("Replica Initialized...");
             serverWriter.flush();
         }
     }
