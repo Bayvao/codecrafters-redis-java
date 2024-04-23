@@ -82,8 +82,7 @@ public class CommandHandler {
             System.out.println("Data inserted in replicas: " + Cache.getCache());
         }
 
-        if (serverInformation.getRole().equalsIgnoreCase("master")
-                && !serverInformation.getReplicaSet().isEmpty()) {
+        if (serverInformation.getRole().equalsIgnoreCase("master")) {
 
             System.out.println("Sending data to replicas");
 
