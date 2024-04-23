@@ -69,12 +69,16 @@ public class CommandHandler {
         if (serverInformation.getRole().equalsIgnoreCase("master")
                 && serverInformation.getReplicaSet() != null
                 && !serverInformation.getReplicaSet().isEmpty()) {
-            
+
+            System.out.println("Sending data to replicas");
+
             Set<OutputStream> replicas = serverInformation.getReplicaSet();
             replicas.forEach(outputStream -> {
                 try {
                     outputStream.write(dataInputStream.readAllBytes());
+                    System.out.println("data sent to replicas");
                 } catch (IOException e) {
+                    System.out.println("Error sending data to replica: " + e.getMessage());
                     throw new RuntimeException(e);
                 }
             });
