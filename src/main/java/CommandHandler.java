@@ -1,4 +1,8 @@
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Locale;
+import java.util.Set;
 import java.util.random.RandomGenerator;
 
 public class CommandHandler {
@@ -13,13 +17,13 @@ public class CommandHandler {
 
     private CommandHandler() {
     }
-    public static String handle(String parsedCommand, ServerInformation serverInformation) {
+    public static String handle(String parsedCommand, ServerInformation serverInformation, DataInputStream dataInputStream) {
         String[] arguments = parsedCommand.split(" ");
         String command = arguments[0].toUpperCase();
         return switch (command) {
             case "PING" -> PLUS + "PONG\r\n";
             case "ECHO" -> DOLLAR + arguments[1].length() + CRLF_TERMINATOR + arguments[1] + CRLF_TERMINATOR;
-            case "SET" -> setCommandData(arguments);
+            case "SET" -> setCommandData(arguments, serverInformation, dataInputStream);
             case "GET" -> getCommandData(arguments);
             case "INFO" -> getServerInformation(serverInformation);
             case "REPLCONF" -> PLUS + "OK\r\n";
@@ -28,6 +32,8 @@ public class CommandHandler {
         };
 
     }
+
+
 
     private static String getServerInformation(ServerInformation serverInformation) {
 
@@ -49,7 +55,7 @@ public class CommandHandler {
         return "$%d\r\n%s\r\n".formatted(s.length(), s);
     }
 
-    private static String setCommandData(String[] arguments) {
+    private static String setCommandData(String[] arguments, ServerInformation serverInformation, DataInputStream dataInputStream) {
         if (arguments.length > 3) {
             String argument = arguments[3].toLowerCase();
             if (argument.equalsIgnoreCase("px")) {
@@ -59,6 +65,18 @@ public class CommandHandler {
         } else {
             Cache.setData(arguments[1], arguments[2]);
         }
+
+        if (serverInformation.getRole().equalsIgnoreCase("master")) {
+            Set<OutputStream> replicas = serverInformation.getReplicaSet();
+            replicas.forEach(outputStream -> {
+                try {
+                    outputStream.write(dataInputStream.readAllBytes());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
         return PLUS + "OK" + CRLF_TERMINATOR;
     }
 

@@ -28,13 +28,13 @@ public class ConnectionHandler extends Thread {
         String parsedCommand = ProtocolParser.parseInput(dataInputStream);
 
         System.out.printf("command received: %s\n", parsedCommand);
-        String response = CommandHandler.handle(parsedCommand, serverInformation);
+        String response = CommandHandler.handle(parsedCommand, serverInformation, dataInputStream);
 
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
 
         if(response.contains("FULLRESYNC")) {
-          System.out.println(socket.getRemoteSocketAddress());
           outputStream.write(sendEmptyRDBFile());
+          serverInformation.setReplicaSet(outputStream);
         }
       }
     } catch (EOFException e) {

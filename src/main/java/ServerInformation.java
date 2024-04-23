@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Set;
 
@@ -8,7 +10,7 @@ public class ServerInformation {
     private String masterPort;
     private String masterReplid;
 
-    private Set<Socket> replicaSet;
+    private Set<OutputStream> replicas;
 
     public String getRole() {
         return role;
@@ -50,11 +52,11 @@ public class ServerInformation {
         this.masterReplid = masterReplid;
     }
 
-    public Set<Socket> getReplicaSet() {
-        return replicaSet;
+    public Set<OutputStream> getReplicaSet() {
+        return replicas;
     }
 
-    public void setReplicaSet(Socket socket) {
-        this.replicaSet.add(socket);
+    public void setReplicaSet(OutputStream socket) throws IOException {
+        this.replicas.add(socket);
     }
 }
