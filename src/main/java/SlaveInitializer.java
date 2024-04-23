@@ -46,6 +46,7 @@ public class SlaveInitializer extends Thread {
                     "Exception occurred when tried to connect to the server: " +
                             e.getMessage());
             System.out.println("IOException: " + e.getMessage());
+            System.out.println(e);
         }
     }
 
@@ -60,11 +61,12 @@ public class SlaveInitializer extends Thread {
 
         String[] arguments = parsedMasterResponse.split(" ");
         String command = arguments[0].toLowerCase();
-
+        
         if (command.equalsIgnoreCase("pong")) {
             serverWriter.write(getReplConfBytes1(serverInformation));
             serverWriter.flush();
 
+            serverReader.readByte();
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
             if (parsedMasterResponse.equalsIgnoreCase("ok")) {
 
