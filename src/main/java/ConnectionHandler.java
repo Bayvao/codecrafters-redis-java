@@ -41,6 +41,8 @@ public class ConnectionHandler extends Thread {
       // Ignore EOF exception
     } catch (IOException e) {
       System.out.println("IOException: " + e.getMessage());
+    } catch (RuntimeException e) {
+      System.out.println("Exception occurred: " + e.getMessage());
     } finally {
       try {
         socket.close();
