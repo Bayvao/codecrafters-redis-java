@@ -66,7 +66,10 @@ public class CommandHandler {
             Cache.setData(arguments[1], arguments[2]);
         }
 
-        if (serverInformation.getRole().equalsIgnoreCase("master")) {
+        if (serverInformation.getRole().equalsIgnoreCase("master")
+                && serverInformation.getReplicaSet() != null
+                && !serverInformation.getReplicaSet().isEmpty()) {
+            
             Set<OutputStream> replicas = serverInformation.getReplicaSet();
             replicas.forEach(outputStream -> {
                 try {
