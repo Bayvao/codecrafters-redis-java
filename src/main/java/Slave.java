@@ -50,8 +50,9 @@ public class Slave {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
                 }
             }
-            serverWriter.flush();
             Connection.initiateConnection(serverInformation);
+            serverWriter.flush();
+
         }
     }
 
