@@ -84,11 +84,10 @@ public class CommandHandler {
 
             System.out.println("Sending data to replicas");
 
-            Set<Socket> replicas = serverInformation.getReplicaSet();
-            replicas.forEach(socket -> {
+            Set<OutputStream> replicas = serverInformation.getReplicaSet();
+            replicas.forEach(stream -> {
                 try {
-                    OutputStream outputStream = socket.getOutputStream();
-                    outputStream.write(encodeRESPArray(arguments).getBytes(StandardCharsets.UTF_8));
+                    stream.write(encodeRESPArray(arguments).getBytes(StandardCharsets.UTF_8));
                     System.out.println("data sent to replicas");
                 } catch (IOException e) {
                     System.out.println("Error sending data to replica: " + e.getMessage());
