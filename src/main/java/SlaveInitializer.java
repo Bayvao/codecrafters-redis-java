@@ -60,10 +60,10 @@ public class SlaveInitializer extends Thread {
                 }
             }
 
+            serverReader.readByte();
             String rDbFile = ProtocolParser.decodeRDbFile(serverReader);
             System.out.printf("Received RDB File: %s", rDbFile);
             System.out.println("Replica Initialized...");
-            serverWriter.flush();
         }
     }
 
