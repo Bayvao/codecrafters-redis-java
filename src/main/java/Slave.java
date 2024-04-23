@@ -50,6 +50,7 @@ public class Slave {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
                 }
             }
+            System.out.println("Starting replica server");
             Connection.initiateConnection(serverInformation);
             serverWriter.flush();
         }
