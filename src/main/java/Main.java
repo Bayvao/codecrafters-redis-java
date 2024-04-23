@@ -37,7 +37,12 @@ public class Main {
 
 
         System.out.println("Logs from your program will appear here!");
-        Connection.initiateConnection(serverInfo);
+
+        if (serverInfo.getRole().equalsIgnoreCase("slave")) {
+            Slave.initiateSlaveConnection(serverInfo);
+        } else {
+            Connection.initiateConnection(serverInfo);
+        }
     }
 
 }

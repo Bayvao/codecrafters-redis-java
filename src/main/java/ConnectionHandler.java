@@ -20,15 +20,9 @@ public class ConnectionHandler extends Thread {
 
   @Override
   public void run() {
-
-    if (serverInformation.getRole().equalsIgnoreCase("slave")) {
-      Slave.initiateSlaveConnection(this.socket, serverInformation);
-    }
-
     try (DataInputStream dataInputStream =
              new DataInputStream(socket.getInputStream());
          OutputStream outputStream = socket.getOutputStream()) {
-
       while (true) {
         System.out.println("Entered");
         String parsedCommand = ProtocolParser.parseInput(dataInputStream);

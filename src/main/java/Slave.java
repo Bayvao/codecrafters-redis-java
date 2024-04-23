@@ -6,12 +6,14 @@ import java.net.Socket;
 
 public class Slave {
 
-    public static void initiateSlaveConnection(Socket replicaSocket, ServerInformation serverInformation) {
+    public static void initiateSlaveConnection(ServerInformation serverInformation) {
 
         // initiating slave to master connection and sending a PING to establish the connection
-        try (DataInputStream serverReader =
-                     new DataInputStream(replicaSocket.getInputStream());
-             OutputStream serverWriter = replicaSocket.getOutputStream()
+        try (Socket serverSocket = new Socket(serverInformation.getMasterHost(),
+                Integer.parseInt(serverInformation.getMasterPort()));
+             DataInputStream serverReader =
+                     new DataInputStream(serverSocket.getInputStream());
+             OutputStream serverWriter = serverSocket.getOutputStream()
         ) {
             initiateHandshakeWithMaster(serverInformation, serverWriter, serverReader);
         } catch (EOFException e) {
@@ -48,6 +50,7 @@ public class Slave {
                 }
             }
             serverWriter.flush();
+            Connection.initiateConnection(serverInformation);
         }
     }
 
