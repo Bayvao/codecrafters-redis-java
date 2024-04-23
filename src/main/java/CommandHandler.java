@@ -24,7 +24,7 @@ public class CommandHandler {
     public static String handle(String parsedCommand, ServerInformation serverInformation) {
         String[] arguments = parsedCommand.split(" ");
         if (serverInformation.getRole().equalsIgnoreCase("slave")) {
-            System.out.println("In replica");
+            System.out.println("In replica, command received: " + Arrays.toString(arguments));
         }
         String command = arguments[0].toUpperCase();
         return switch (command) {
