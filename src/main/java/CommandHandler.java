@@ -78,10 +78,7 @@ public class CommandHandler {
         } else {
             Cache.setData(arguments[1], arguments[2]);
         }
-
-        if (serverInformation.getRole().equalsIgnoreCase("slave")) {
-            System.out.println("Data inserted in replicas: " + Cache.getCache());
-        }
+        System.out.println("Data inserted in role: " + serverInformation.getRole() + ", data: " + Cache.getCache());
 
         if (serverInformation.getRole().equalsIgnoreCase("master")) {
 
