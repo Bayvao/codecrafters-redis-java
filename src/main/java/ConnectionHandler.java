@@ -16,7 +16,6 @@ public class ConnectionHandler extends Thread {
   public ConnectionHandler(Socket socket, ServerInformation serverInformation) {
     this.socket = socket;
     this.serverInformation =  serverInformation;
-    System.out.println("client socket = " + socket + " connected!");
   }
 
   @Override
@@ -34,7 +33,7 @@ public class ConnectionHandler extends Thread {
 
         if(response.contains("FULLRESYNC")) {
           outputStream.write(sendEmptyRDBFile());
-          serverInformation.setReplicaSet(outputStream);
+          serverInformation.setReplicaSet(this.socket);
         }
       }
     } catch (EOFException e) {

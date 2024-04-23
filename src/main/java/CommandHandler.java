@@ -1,6 +1,7 @@
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Locale;
@@ -86,9 +87,10 @@ public class CommandHandler {
 
             System.out.println("Sending data to replicas");
 
-            Set<OutputStream> replicas = serverInformation.getReplicaSet();
-            replicas.forEach(outputStream -> {
+            Set<Socket> replicas = serverInformation.getReplicaSet();
+            replicas.forEach(socket -> {
                 try {
+                    OutputStream outputStream = socket.getOutputStream();
                     outputStream.write(encodeRESPArray(arguments).getBytes(StandardCharsets.UTF_8));
                     System.out.println("data sent to replicas");
                 } catch (IOException e) {
