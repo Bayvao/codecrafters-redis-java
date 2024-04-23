@@ -15,6 +15,7 @@ public class Slave {
                      new DataInputStream(serverSocket.getInputStream());
              OutputStream serverWriter = serverSocket.getOutputStream()
         ) {
+            System.out.println("initiating Handshake with master: " + serverInformation.getMasterHost() + " : " + serverInformation.getMasterPort());
             initiateHandshakeWithMaster(serverInformation, serverWriter, serverReader);
         } catch (EOFException e) {
             //this is fine
