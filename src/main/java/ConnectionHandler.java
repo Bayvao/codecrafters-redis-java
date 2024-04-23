@@ -31,7 +31,10 @@ public class ConnectionHandler extends Thread {
 
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
 
+        System.out.println("in here 1");
+
         if(response.contains("FULLRESYNC")) {
+          System.out.println("in here");
           System.out.println("Adding replica: " + outputStream);
           serverInformation.setReplicaSet(outputStream);
           System.out.println("replica added " + serverInformation);
