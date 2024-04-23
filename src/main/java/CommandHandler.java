@@ -69,6 +69,7 @@ public class CommandHandler {
             System.out.println("Setting replica data");
         }
 
+        System.out.println("setting data in: " + serverInformation.getRole());
         if (arguments.length > 3) {
             String argument = arguments[3].toLowerCase();
             if (argument.equalsIgnoreCase("px")) {
@@ -80,7 +81,7 @@ public class CommandHandler {
         }
         System.out.println("Data inserted in role: " + serverInformation.getRole() + ", data: " + Cache.getCache());
 
-        if (!serverInformation.getReplicaSet().isEmpty()) {
+        if (serverInformation.getRole().equalsIgnoreCase("master")) {
 
             System.out.println("Sending data to replicas");
 
