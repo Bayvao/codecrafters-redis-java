@@ -4,9 +4,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
-public class Slave {
+public class SlaveInitializer extends Thread {
 
-    public static void initiateSlaveConnection(ServerInformation serverInformation) {
+    private ServerInformation serverInformation;
+
+    public SlaveInitializer(ServerInformation serverInformation) {
+        this.serverInformation = serverInformation;
+    }
+
+    @Override
+    public void run() {
 
         // initiating slave to master connection and sending a PING to establish the connection
         try (Socket serverSocket = new Socket(serverInformation.getMasterHost(),
@@ -17,10 +24,6 @@ public class Slave {
         ) {
             System.out.println("initiating Handshake with master: " + serverInformation.getMasterHost() + " : " + serverInformation.getMasterPort());
             initiateHandshakeWithMaster(serverInformation, serverWriter, serverReader);
-            serverWriter.flush();
-            serverSocket.close();
-            serverReader.close();
-            serverWriter.close();
         } catch (EOFException e) {
             //this is fine
         } catch (IOException e) {
@@ -48,12 +51,14 @@ public class Slave {
 
                 serverWriter.write(getReplConfBytes2(serverInformation));
                 serverReader.readByte();
-                parsedMasterResponse = ProtocolParser.parseInput(serverReader); //OK
+                parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
 
                 if (parsedMasterResponse.equalsIgnoreCase("ok")) {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
                 }
             }
+            System.out.println("Starting replica server");
+            serverWriter.flush();
         }
     }
 

@@ -35,8 +35,8 @@ public class Main {
             serverInfo.setMasterReplid(HexFormat.of().formatHex(REPLICA_ID));
         }
 
-
         System.out.println("Logs from your program will appear here!");
+
         Connection.initiateConnection(serverInfo);
     }
 

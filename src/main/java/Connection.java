@@ -12,10 +12,13 @@ public class Connection {
 
             serverSocket.setReuseAddress(true);
             if (serverInfo.getRole().equalsIgnoreCase("slave")) {
-                Slave.initiateSlaveConnection(serverInfo);
+                System.out.println("Replica node initializing");
+                new SlaveInitializer(serverInfo).start();
+            } else {
+                System.out.println("Master node initializing");
             }
 
-            System.out.println("Starting replica server");
+
             // Wait for connection from client.
             while (true) {
                 new ConnectionHandler(serverSocket.accept(), serverInfo).start();
