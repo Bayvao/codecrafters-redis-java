@@ -32,10 +32,10 @@ public class ConnectionHandler extends Thread {
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
 
         if(response.contains("FULLRESYNC")) {
-          outputStream.write(sendEmptyRDBFile());
           System.out.println("Adding replica: " + outputStream);
           serverInformation.setReplicaSet(outputStream);
           System.out.println("replica added " + serverInformation);
+          outputStream.write(sendEmptyRDBFile());
         }
       }
     } catch (EOFException e) {
