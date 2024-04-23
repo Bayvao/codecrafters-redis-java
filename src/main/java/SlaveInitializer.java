@@ -37,7 +37,7 @@ public class SlaveInitializer extends Thread {
             serverSocket.setReuseAddress(true);
 
             while (true) {
-                System.out.println("Replica Server Started");
+                System.out.println("Replica Server Started in here");
                 clientSocket = serverSocket.accept();
                 threads.submit(new ConnectionHandler(clientSocket, serverInformation));
             }
