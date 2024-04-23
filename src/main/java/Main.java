@@ -37,7 +37,15 @@ public class Main {
 
         System.out.println("Logs from your program will appear here!");
 
-        Connection.initiateConnection(serverInfo);
+        if (serverInfo.getRole().equalsIgnoreCase("slave")) {
+            System.out.println("Replica node initializing");
+            new SlaveInitializer(serverInfo).start();
+        } else {
+            System.out.println("Master node initializing");
+            Connection.initiateConnection(serverInfo);
+        }
+
+
     }
 
 }

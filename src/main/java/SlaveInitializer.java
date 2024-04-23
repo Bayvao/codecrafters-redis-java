@@ -2,7 +2,10 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SlaveInitializer extends Thread {
 
@@ -15,15 +18,27 @@ public class SlaveInitializer extends Thread {
     @Override
     public void run() {
 
+        ExecutorService threads = Executors.newCachedThreadPool();
+        Socket clientSocket = null;
+
         // initiating slave to master connection and sending a PING to establish the connection
-        try (Socket serverSocket = new Socket(serverInformation.getMasterHost(),
-                Integer.parseInt(serverInformation.getMasterPort()));
-             DataInputStream serverReader =
-                     new DataInputStream(serverSocket.getInputStream());
-             OutputStream serverWriter = serverSocket.getOutputStream()
-        ) {
+        try (Socket masterSocket = new Socket(serverInformation.getMasterHost(), Integer.parseInt(serverInformation.getMasterPort()));
+
+             DataInputStream serverReader = new DataInputStream(masterSocket.getInputStream());
+
+             OutputStream serverWriter = masterSocket.getOutputStream()) {
+
             System.out.println("initiating Handshake with master: " + serverInformation.getMasterHost() + " : " + serverInformation.getMasterPort());
             initiateHandshakeWithMaster(serverInformation, serverWriter, serverReader);
+
+            ServerSocket serverSocket = new ServerSocket(serverInformation.getPort());
+            serverSocket.setReuseAddress(true);
+
+            while (true) {
+                clientSocket = serverSocket.accept();
+                threads.submit(new ConnectionHandler(clientSocket, serverInformation));
+            }
+
         } catch (EOFException e) {
             //this is fine
         } catch (IOException e) {
@@ -39,6 +54,8 @@ public class SlaveInitializer extends Thread {
                                                     DataInputStream serverReader) throws IOException {
         String parsedMasterResponse;
         serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
+        serverWriter.flush();
+
         parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
 
         String[] arguments = parsedMasterResponse.split(" ");
@@ -46,17 +63,20 @@ public class SlaveInitializer extends Thread {
 
         if (command.equalsIgnoreCase("pong")) {
             serverWriter.write(getReplConfBytes1(serverInformation));
+            serverWriter.flush();
 
-            serverReader.readByte();
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
             if (parsedMasterResponse.equalsIgnoreCase("ok")) {
 
                 serverWriter.write(getReplConfBytes2(serverInformation));
+                serverWriter.flush();
+
                 serverReader.readByte();
                 parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
 
                 if (parsedMasterResponse.equalsIgnoreCase("ok")) {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
+                    serverWriter.flush();
                 }
             }
 
