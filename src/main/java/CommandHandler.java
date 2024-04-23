@@ -92,6 +92,7 @@ public class CommandHandler {
                     stream.write(bulkString.getBytes(StandardCharsets.UTF_8));
                     System.out.println("data sent to replicas: ");
                     System.out.print(bulkString);
+                    stream.flush();
                 } catch (IOException e) {
                     System.out.println("Error sending data to replica: " + e.getMessage());
                     throw new RuntimeException(e);

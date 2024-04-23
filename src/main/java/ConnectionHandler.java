@@ -29,10 +29,6 @@ public class ConnectionHandler extends Thread {
       while (true) {
         System.out.println("Entered");
 
-        if (serverInformation.getRole().equalsIgnoreCase("slave")) {
-          dataInputStream.readByte();
-        }
-
         String parsedCommand = ProtocolParser.parseInput(dataInputStream);
 
         System.out.printf("command received: %s\n", parsedCommand);
