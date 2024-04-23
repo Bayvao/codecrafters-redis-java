@@ -60,4 +60,16 @@ public class ServerInformation {
     public synchronized void setReplicaSet(Socket socket) throws IOException {
         this.replicas.add(socket);
     }
+
+    @Override
+    public String toString() {
+        return "ServerInformation{" +
+                "role='" + role + '\'' +
+                ", port=" + port +
+                ", masterHost='" + masterHost + '\'' +
+                ", masterPort='" + masterPort + '\'' +
+                ", masterReplid='" + masterReplid + '\'' +
+                ", replicas=" + replicas +
+                '}';
+    }
 }

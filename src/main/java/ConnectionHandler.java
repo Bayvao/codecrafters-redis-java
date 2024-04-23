@@ -33,7 +33,9 @@ public class ConnectionHandler extends Thread {
 
         if(response.contains("FULLRESYNC")) {
           outputStream.write(sendEmptyRDBFile());
+          System.out.println("Adding replica: " + this.socket);
           serverInformation.setReplicaSet(this.socket);
+          System.out.println("replica added " + serverInformation);
         }
       }
     } catch (EOFException e) {
