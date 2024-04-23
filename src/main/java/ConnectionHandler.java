@@ -28,7 +28,7 @@ public class ConnectionHandler extends Thread {
         String parsedCommand = ProtocolParser.parseInput(dataInputStream);
 
         System.out.printf("command received: %s\n", parsedCommand);
-        String response = CommandHandler.handle(parsedCommand, serverInformation, dataInputStream);
+        String response = CommandHandler.handle(parsedCommand, serverInformation);
 
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
 

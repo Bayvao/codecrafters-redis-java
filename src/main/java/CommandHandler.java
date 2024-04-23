@@ -1,9 +1,13 @@
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Set;
 import java.util.random.RandomGenerator;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class CommandHandler {
 
@@ -17,13 +21,13 @@ public class CommandHandler {
 
     private CommandHandler() {
     }
-    public static String handle(String parsedCommand, ServerInformation serverInformation, DataInputStream dataInputStream) {
+    public static String handle(String parsedCommand, ServerInformation serverInformation) {
         String[] arguments = parsedCommand.split(" ");
         String command = arguments[0].toUpperCase();
         return switch (command) {
             case "PING" -> PLUS + "PONG\r\n";
             case "ECHO" -> DOLLAR + arguments[1].length() + CRLF_TERMINATOR + arguments[1] + CRLF_TERMINATOR;
-            case "SET" -> setCommandData(arguments, serverInformation, dataInputStream);
+            case "SET" -> setCommandData(arguments, serverInformation);
             case "GET" -> getCommandData(arguments);
             case "INFO" -> getServerInformation(serverInformation);
             case "REPLCONF" -> PLUS + "OK\r\n";
@@ -55,7 +59,7 @@ public class CommandHandler {
         return "$%d\r\n%s\r\n".formatted(s.length(), s);
     }
 
-    private static String setCommandData(String[] arguments, ServerInformation serverInformation, DataInputStream dataInputStream) {
+    private static String setCommandData(String[] arguments, ServerInformation serverInformation) {
         if (arguments.length > 3) {
             String argument = arguments[3].toLowerCase();
             if (argument.equalsIgnoreCase("px")) {
@@ -74,7 +78,7 @@ public class CommandHandler {
             Set<OutputStream> replicas = serverInformation.getReplicaSet();
             replicas.forEach(outputStream -> {
                 try {
-                    outputStream.write(dataInputStream.readAllBytes());
+                    outputStream.write(encodeRESPArray(arguments).getBytes(StandardCharsets.UTF_8));
                     System.out.println("data sent to replicas");
                 } catch (IOException e) {
                     System.out.println("Error sending data to replica: " + e.getMessage());
@@ -93,5 +97,16 @@ public class CommandHandler {
             return DOLLAR + "-1" + CRLF_TERMINATOR;
         }
         return DOLLAR + data.length() + CRLF_TERMINATOR + data + CRLF_TERMINATOR;
+    }
+
+    public static String encodeRESPArray(String[] messages) {
+        return "*%d\r\n%s".formatted(messages.length,
+                Arrays.stream(messages)
+                        .map(CommandHandler::encodeRESP)
+                        .collect(Collectors.joining("")));
+    }
+
+    public static String encodeRESP(String message) {
+        return "$%d\r\n%s\r\n".formatted(message.length(), message);
     }
 }
