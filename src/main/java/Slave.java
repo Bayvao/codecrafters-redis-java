@@ -47,12 +47,11 @@ public class Slave {
                 parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
 
                 if (parsedMasterResponse.equalsIgnoreCase("ok")) {
+                    Connection.initiateConnection(serverInformation);
                     serverWriter.write(getPsyncConfBytes(serverInformation));
                 }
             }
-            Connection.initiateConnection(serverInformation);
             serverWriter.flush();
-
         }
     }
 
