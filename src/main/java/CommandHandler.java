@@ -67,7 +67,6 @@ public class CommandHandler {
         }
 
         if (serverInformation.getRole().equalsIgnoreCase("master")
-                && serverInformation.getReplicaSet() != null
                 && !serverInformation.getReplicaSet().isEmpty()) {
 
             System.out.println("Sending data to replicas");

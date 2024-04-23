@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.Set;
 
 public class ServerInformation {
@@ -10,7 +11,7 @@ public class ServerInformation {
     private String masterPort;
     private String masterReplid;
 
-    private Set<OutputStream> replicas;
+    private volatile Set<OutputStream> replicas = new HashSet<>();
 
     public String getRole() {
         return role;
@@ -52,11 +53,11 @@ public class ServerInformation {
         this.masterReplid = masterReplid;
     }
 
-    public Set<OutputStream> getReplicaSet() {
+    public synchronized Set<OutputStream> getReplicaSet() {
         return replicas;
     }
 
-    public void setReplicaSet(OutputStream socket) throws IOException {
+    public synchronized void setReplicaSet(OutputStream socket) throws IOException {
         this.replicas.add(socket);
     }
 }
