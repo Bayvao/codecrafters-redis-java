@@ -11,7 +11,11 @@ public class Connection {
             // ensures that we don't run into 'Address already in use' errors
 
             serverSocket.setReuseAddress(true);
+            if (serverInfo.getRole().equalsIgnoreCase("slave")) {
+                Slave.initiateSlaveConnection(serverInfo);
+            }
 
+            System.out.println("Starting replica server");
             // Wait for connection from client.
             while (true) {
                 new ConnectionHandler(serverSocket.accept(), serverInfo).start();

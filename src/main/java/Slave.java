@@ -44,14 +44,12 @@ public class Slave {
 
                 serverWriter.write(getReplConfBytes2(serverInformation));
                 serverReader.readByte();
-                parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+                parsedMasterResponse = ProtocolParser.parseInput(serverReader); //OK
 
                 if (parsedMasterResponse.equalsIgnoreCase("ok")) {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
                 }
             }
-            System.out.println("Starting replica server");
-            Connection.initiateConnection(serverInformation);
             serverWriter.flush();
         }
     }
