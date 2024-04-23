@@ -31,4 +31,8 @@ public class Cache {
     public static void remove(Object key) {
         cache.remove(key);
     }
+
+    public static ConcurrentMap<Object, StorageData> getCache() {
+        return cache;
+    }
 }
