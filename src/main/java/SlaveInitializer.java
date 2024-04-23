@@ -18,7 +18,6 @@ public class SlaveInitializer extends Thread {
     @Override
     public void run() {
 
-        ExecutorService threads = Executors.newCachedThreadPool();
         Socket clientSocket = null;
 
         // initiating slave to master connection and sending a PING to establish the connection
@@ -39,7 +38,7 @@ public class SlaveInitializer extends Thread {
             while (true) {
                 System.out.println("Replica Server Started in here");
                 clientSocket = serverSocket.accept();
-                threads.submit(new ConnectionHandler(clientSocket, serverInformation));
+                new ConnectionHandler(clientSocket, serverInformation).start();
             }
 
         } catch (EOFException e) {
