@@ -31,11 +31,14 @@ public class SlaveInitializer extends Thread {
             System.out.println("initiating Handshake with master: " + serverInformation.getMasterHost() + " : " + serverInformation.getMasterPort());
             initiateHandshakeWithMaster(serverInformation, serverWriter, serverReader);
 
+
+            System.out.println("Replica Initialized...");
             ServerSocket serverSocket = new ServerSocket(serverInformation.getPort());
             serverSocket.setReuseAddress(true);
 
             while (true) {
                 clientSocket = serverSocket.accept();
+                System.out.println("Server Started");
                 threads.submit(new ConnectionHandler(clientSocket, serverInformation));
             }
 
@@ -61,7 +64,7 @@ public class SlaveInitializer extends Thread {
 
         String[] arguments = parsedMasterResponse.split(" ");
         String command = arguments[0].toLowerCase();
-        
+
         if (command.equalsIgnoreCase("pong")) {
             serverWriter.write(getReplConfBytes1(serverInformation));
             serverWriter.flush();
@@ -85,7 +88,6 @@ public class SlaveInitializer extends Thread {
 //            serverReader.readByte();
 //            String rDbFile = ProtocolParser.decodeRDbFile(serverReader);
 //            System.out.printf("Received RDB File: %s", rDbFile);
-            System.out.println("Replica Initialized...");
         }
     }
 
