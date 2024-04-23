@@ -33,8 +33,8 @@ public class ConnectionHandler extends Thread {
         outputStream.write(response.getBytes(StandardCharsets.UTF_8));
 
         if(response.contains("FULLRESYNC")) {
-          outputStream.write(sendEmptyRDBFile());
           serverInformation.setReplicaSet(outputStream);
+          outputStream.write(sendEmptyRDBFile());
         }
       }
     } catch (EOFException e) {
