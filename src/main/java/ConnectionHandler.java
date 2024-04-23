@@ -24,6 +24,7 @@ public class ConnectionHandler extends Thread {
              new DataInputStream(socket.getInputStream());
          OutputStream outputStream = socket.getOutputStream()) {
       while (true) {
+        System.out.println("Entered");
         String parsedCommand = ProtocolParser.parseInput(dataInputStream);
 
         System.out.printf("command received: %s\n", parsedCommand);
