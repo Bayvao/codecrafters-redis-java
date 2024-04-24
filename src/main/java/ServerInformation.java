@@ -11,7 +11,7 @@ public class ServerInformation {
     private String masterPort;
     private String masterReplid;
 
-    private volatile Set<Socket> replicas = new HashSet<>();
+    private volatile Set<OutputStream> replicas = new HashSet<>();
 
     public String getRole() {
         return role;
@@ -53,12 +53,12 @@ public class ServerInformation {
         this.masterReplid = masterReplid;
     }
 
-    public synchronized Set<Socket> getReplicaSet() {
+    public synchronized Set<OutputStream> getReplicaSet() {
         return replicas;
     }
 
-    public synchronized void setReplicaSet(Socket socket) throws IOException {
-        this.replicas.add(socket);
+    public synchronized void setReplicaSet(OutputStream outputStream) throws IOException {
+        this.replicas.add(outputStream);
     }
 
     @Override

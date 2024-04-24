@@ -8,7 +8,7 @@ import java.util.random.RandomGenerator;
 public class Main {
     private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
-    private static final byte[] REPLICA_ID = new byte[40];
+    private static final byte[] REPLICA_ID = new byte[10];
 
     public static void main(String[] args){
         ServerInformation serverInfo = new ServerInformation();

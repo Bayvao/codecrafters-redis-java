@@ -19,6 +19,8 @@ public class Connection {
         } catch (EOFException e) {
             //this is fine
         } catch (IOException e) {
+            System.out.println(serverInfo);
+            System.out.println(e);
             System.out.println("IOException: " + e.getMessage());
         }
     }

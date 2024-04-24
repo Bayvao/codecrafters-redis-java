@@ -39,7 +39,7 @@ public class ConnectionHandler extends Thread {
 
         if(response.contains("FULLRESYNC")) {
           System.out.println("Adding replica: " + outputStream);
-          serverInformation.setReplicaSet(this.socket);
+          serverInformation.setReplicaSet(outputStream);
           System.out.println("replica added " + serverInformation);
           outputStream.write(sendEmptyRDBFile());
         }

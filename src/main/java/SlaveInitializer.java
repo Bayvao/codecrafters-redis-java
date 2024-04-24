@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -34,6 +36,7 @@ public class SlaveInitializer extends Thread {
             while (true) {
 
                 System.out.println("Replica Server Started in here");
+                serverReader.readByte();
                 String parsedCommand = ProtocolParser.parseInput(serverReader);
                 System.out.printf("command received: %s\n", parsedCommand);
                 String response = CommandHandler.handle(parsedCommand, serverInformation);
@@ -56,24 +59,53 @@ public class SlaveInitializer extends Thread {
                                                     DataInputStream serverReader) throws IOException {
         String parsedMasterResponse;
         serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
+        serverWriter.flush();
+
         parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
         String[] arguments = parsedMasterResponse.split(" ");
         String command = arguments[0].toLowerCase();
+
         if (command.equalsIgnoreCase("pong")) {
             serverWriter.write(getReplConfBytes1(serverInformation));
+            serverWriter.flush();
+
             serverReader.readByte();
+
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+
             if (parsedMasterResponse.equalsIgnoreCase("ok")) {
                 serverWriter.write(getReplConfBytes2(serverInformation));
+                serverWriter.flush();
+
                 serverReader.readByte();
                 parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
                 if (parsedMasterResponse.equalsIgnoreCase("ok")) {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
+                    serverWriter.flush();
                 }
             }
+
+
+            serverReader.readByte();
+            parsedMasterResponse  = ProtocolParser.parseInput(serverReader);
+            if (command.equalsIgnoreCase("fullresync")) {
+                System.out.printf("Unexpected response for PSYNC: %s\n", parsedMasterResponse);
+            } else {
+                System.out.printf("Received response for PSYNC: %s\n", parsedMasterResponse);
+            }
+
+            serverReader.readByte();
+            decodeRDbFile(serverReader);
             serverWriter.flush();
-            Connection.initiateConnection(serverInformation);
         }
+    }
+
+    public static void decodeRDbFile(DataInputStream reader) throws IOException {
+        int fileSize = Integer.parseInt(reader.readLine().substring(1));
+        byte[] buffer = new byte[fileSize];
+        int bytesRead = reader.read(buffer, 0, fileSize - 1);
+        String rdbFile = new String(buffer, 0, fileSize);
+        System.out.println(rdbFile);
     }
 
 
