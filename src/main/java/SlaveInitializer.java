@@ -59,10 +59,12 @@ public class SlaveInitializer extends Thread {
         serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
         serverWriter.flush();
 
+        System.out.println("Sent PING to master");
         String parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
         String[] arguments = parsedMasterResponse.split(" ");
         String command = arguments[0].toLowerCase();
 
+        System.out.println("received PONG from master");
         if (command.equalsIgnoreCase("pong")) {
             serverWriter.write(getReplConfBytes1(serverInformation));
             serverWriter.flush();
