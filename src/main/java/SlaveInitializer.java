@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,8 +19,6 @@ public class SlaveInitializer extends Thread {
     @Override
     public void run() {
 
-        Socket clientSocket = null;
-
         // initiating slave to master connection and sending a PING to establish the connection
         try (Socket masterSocket = new Socket(serverInformation.getMasterHost(), Integer.parseInt(serverInformation.getMasterPort()));
 
@@ -30,15 +29,15 @@ public class SlaveInitializer extends Thread {
             System.out.println("initiating Handshake with master: " + serverInformation.getMasterHost() + " : " + serverInformation.getMasterPort());
             initiateHandshakeWithMaster(serverInformation, serverWriter, serverReader);
 
-
             System.out.println("Replica Initialized...");
-            ServerSocket serverSocket = new ServerSocket(serverInformation.getPort());
-            serverSocket.setReuseAddress(true);
 
             while (true) {
+
                 System.out.println("Replica Server Started in here");
-                clientSocket = serverSocket.accept();
-                new ConnectionHandler(clientSocket, serverInformation).start();
+                String parsedCommand = ProtocolParser.parseInput(serverReader);
+                System.out.printf("command received: %s\n", parsedCommand);
+                String response = CommandHandler.handle(parsedCommand, serverInformation);
+                serverWriter.write(response.getBytes(StandardCharsets.UTF_8));
             }
 
         } catch (EOFException e) {
@@ -57,36 +56,23 @@ public class SlaveInitializer extends Thread {
                                                     DataInputStream serverReader) throws IOException {
         String parsedMasterResponse;
         serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
-        serverWriter.flush();
-
         parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
-
         String[] arguments = parsedMasterResponse.split(" ");
         String command = arguments[0].toLowerCase();
-
         if (command.equalsIgnoreCase("pong")) {
             serverWriter.write(getReplConfBytes1(serverInformation));
-            serverWriter.flush();
-
             serverReader.readByte();
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
             if (parsedMasterResponse.equalsIgnoreCase("ok")) {
-
                 serverWriter.write(getReplConfBytes2(serverInformation));
-                serverWriter.flush();
-
                 serverReader.readByte();
                 parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
-
                 if (parsedMasterResponse.equalsIgnoreCase("ok")) {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
-                    serverWriter.flush();
                 }
             }
-
-//            serverReader.readByte();
-//            String rDbFile = ProtocolParser.decodeRDbFile(serverReader);
-//            System.out.printf("Received RDB File: %s", rDbFile);
+            serverWriter.flush();
+            Connection.initiateConnection(serverInformation);
         }
     }
 

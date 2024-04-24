@@ -16,6 +16,7 @@ public class ConnectionHandler extends Thread {
   public ConnectionHandler(Socket socket, ServerInformation serverInformation) {
     this.socket = socket;
     this.serverInformation =  serverInformation;
+    System.out.println("client socket = " + socket + " connected!");
   }
 
   @Override

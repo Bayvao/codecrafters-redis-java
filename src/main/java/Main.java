@@ -42,9 +42,8 @@ public class Main {
             new SlaveInitializer(serverInfo).start();
         } else {
             System.out.println("Master node initializing");
-            Connection.initiateConnection(serverInfo);
         }
-
+        Connection.initiateConnection(serverInfo);
 
     }
 
