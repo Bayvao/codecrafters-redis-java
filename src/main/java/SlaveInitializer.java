@@ -70,6 +70,7 @@ public class SlaveInitializer extends Thread {
             serverWriter.flush();
             System.out.println("Sent ReplConfBytes1 to master");
 
+            serverReader.readByte();
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
             System.out.println("received OK from master");
 
@@ -87,7 +88,7 @@ public class SlaveInitializer extends Thread {
                     System.out.println("Sent PsyncConfBytes to master");
                 }
             }
-            serverReader.readByte();
+
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader);
             System.out.printf("Received response for PSYNC: %s\n", parsedMasterResponse);
 
