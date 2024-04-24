@@ -68,20 +68,26 @@ public class SlaveInitializer extends Thread {
         if (command.equalsIgnoreCase("pong")) {
             serverWriter.write(getReplConfBytes1(serverInformation));
             serverWriter.flush();
+            System.out.println("Sent ReplConfBytes1 to master");
 
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+            System.out.println("received OK from master");
 
             if (parsedMasterResponse.equalsIgnoreCase("ok")) {
                 serverWriter.write(getReplConfBytes2(serverInformation));
                 serverWriter.flush();
+                System.out.println("Sent ReplConfBytes2 to master");
 
                 parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+                System.out.println("received OK from master");
+
                 if (parsedMasterResponse.equalsIgnoreCase("ok")) {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
                     serverWriter.flush();
+                    System.out.println("Sent PsyncConfBytes to master");
                 }
             }
-
+            serverReader.readByte();
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader);
             System.out.printf("Received response for PSYNC: %s\n", parsedMasterResponse);
 
