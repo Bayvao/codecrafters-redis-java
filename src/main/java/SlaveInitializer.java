@@ -23,12 +23,9 @@ public class SlaveInitializer extends Thread {
 
         // initiating slave to master connection and sending a PING to establish the connection
         try (Socket masterSocket = new Socket(serverInformation.getMasterHost(), Integer.parseInt(serverInformation.getMasterPort()));
-
              DataInputStream serverReader = new DataInputStream(masterSocket.getInputStream());
-
              OutputStream serverWriter = masterSocket.getOutputStream()) {
 
-            System.out.println("initiating Handshake with master: " + serverInformation.getMasterHost() + " : " + serverInformation.getMasterPort());
             initiateHandshakeWithMaster(serverInformation, serverWriter, serverReader);
 
             System.out.println("Replica Initialized...");
@@ -56,11 +53,11 @@ public class SlaveInitializer extends Thread {
     private static void initiateHandshakeWithMaster(ServerInformation serverInformation,
                                                     OutputStream serverWriter,
                                                     DataInputStream serverReader) throws IOException {
-        String parsedMasterResponse;
+
         serverWriter.write("*1\r\n$4\r\nping\r\n".getBytes());
         serverWriter.flush();
 
-        parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
+        String parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
         String[] arguments = parsedMasterResponse.split(" ");
         String command = arguments[0].toLowerCase();
 
@@ -68,15 +65,12 @@ public class SlaveInitializer extends Thread {
             serverWriter.write(getReplConfBytes1(serverInformation));
             serverWriter.flush();
 
-            serverReader.readByte();
-
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
 
             if (parsedMasterResponse.equalsIgnoreCase("ok")) {
                 serverWriter.write(getReplConfBytes2(serverInformation));
                 serverWriter.flush();
 
-                serverReader.readByte();
                 parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
                 if (parsedMasterResponse.equalsIgnoreCase("ok")) {
                     serverWriter.write(getPsyncConfBytes(serverInformation));
@@ -84,16 +78,9 @@ public class SlaveInitializer extends Thread {
                 }
             }
 
-
-            serverReader.readByte();
             parsedMasterResponse  = ProtocolParser.parseInput(serverReader);
-            if (command.equalsIgnoreCase("fullresync")) {
-                System.out.printf("Unexpected response for PSYNC: %s\n", parsedMasterResponse);
-            } else {
-                System.out.printf("Received response for PSYNC: %s\n", parsedMasterResponse);
-            }
+            System.out.printf("Received response for PSYNC: %s\n", parsedMasterResponse);
 
-            serverReader.readByte();
             decodeRDbFile(serverReader);
             serverWriter.flush();
         }
