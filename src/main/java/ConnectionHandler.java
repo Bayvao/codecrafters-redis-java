@@ -43,7 +43,9 @@ public class ConnectionHandler extends Thread {
           System.out.println("replica added " + serverInformation);
           outputStream.write(sendEmptyRDBFile());
         }
+        outputStream.flush();
       }
+
     } catch (EOFException e) {
       // Ignore EOF exception
     } catch (IOException e) {
