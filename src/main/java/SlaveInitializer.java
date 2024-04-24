@@ -79,6 +79,7 @@ public class SlaveInitializer extends Thread {
                 serverWriter.flush();
                 System.out.println("Sent ReplConfBytes2 to master");
 
+                serverReader.readByte();
                 parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
                 System.out.println("received OK from master");
 
