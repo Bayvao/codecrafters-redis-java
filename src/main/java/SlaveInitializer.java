@@ -47,6 +47,8 @@ public class SlaveInitializer extends Thread {
                             e.getMessage());
             System.out.println("IOException: " + e.getMessage());
             System.out.println(e);
+        } catch (RuntimeException e) {
+            System.out.println("Exception occurred: " + e.getMessage());
         }
     }
 
