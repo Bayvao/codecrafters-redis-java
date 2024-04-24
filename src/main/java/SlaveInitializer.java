@@ -36,7 +36,6 @@ public class SlaveInitializer extends Thread {
             while (true) {
 
                 System.out.println("Replica Server Started in here");
-                serverReader.readByte();
                 String parsedCommand = ProtocolParser.parseInput(serverReader);
                 System.out.printf("command received: %s\n", parsedCommand);
                 String response = CommandHandler.handle(parsedCommand, serverInformation);
