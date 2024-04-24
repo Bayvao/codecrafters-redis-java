@@ -5,8 +5,12 @@ import java.util.stream.IntStream;
 
 public class ProtocolParser {
     private ProtocolParser() {}
-    public static String parseInput(DataInputStream inputStream) {
+    public static String parseInput(DataInputStream inputStream, ServerInformation serverInformation) {
         try {
+
+            if (serverInformation.getRole().equalsIgnoreCase("slave"))
+                inputStream.readByte();
+
             char c = (char) inputStream.readByte();
             return switch (c) {
                 case '+' -> parseSimpleString(inputStream);

@@ -33,7 +33,7 @@ public class SlaveInitializer extends Thread {
             while (true) {
 
                 System.out.println("Replica Server Started in here");
-                String parsedCommand = ProtocolParser.parseInput(serverReader);
+                String parsedCommand = ProtocolParser.parseInput(serverReader, serverInformation);
                 System.out.printf("command received: %s\n", parsedCommand);
                 String response = CommandHandler.handle(parsedCommand, serverInformation);
                 serverWriter.write(response.getBytes(StandardCharsets.UTF_8));
@@ -60,7 +60,7 @@ public class SlaveInitializer extends Thread {
         serverWriter.flush();
 
         System.out.println("Sent PING to master");
-        String parsedMasterResponse = ProtocolParser.parseInput(serverReader); //PONG
+        String parsedMasterResponse = ProtocolParser.parseInput(serverReader, serverInformation); //PONG
         String[] arguments = parsedMasterResponse.split(" ");
         String command = arguments[0].toLowerCase();
 
@@ -70,8 +70,7 @@ public class SlaveInitializer extends Thread {
             serverWriter.flush();
             System.out.println("Sent ReplConfBytes1 to master");
 
-            serverReader.readByte();
-            parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+            parsedMasterResponse  = ProtocolParser.parseInput(serverReader, serverInformation); //OK
             System.out.println("received OK from master");
 
             if (parsedMasterResponse.equalsIgnoreCase("ok")) {
@@ -79,8 +78,7 @@ public class SlaveInitializer extends Thread {
                 serverWriter.flush();
                 System.out.println("Sent ReplConfBytes2 to master");
 
-                serverReader.readByte();
-                parsedMasterResponse  = ProtocolParser.parseInput(serverReader); //OK
+                parsedMasterResponse  = ProtocolParser.parseInput(serverReader, serverInformation); //OK
                 System.out.println("received OK from master");
 
                 if (parsedMasterResponse.equalsIgnoreCase("ok")) {
@@ -90,7 +88,7 @@ public class SlaveInitializer extends Thread {
                 }
             }
 
-            parsedMasterResponse  = ProtocolParser.parseInput(serverReader);
+            parsedMasterResponse  = ProtocolParser.parseInput(serverReader, serverInformation);
             System.out.printf("Received response for PSYNC: %s\n", parsedMasterResponse);
 
             decodeRDbFile(serverReader);
