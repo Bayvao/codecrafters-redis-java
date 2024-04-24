@@ -30,7 +30,7 @@ public class ConnectionHandler extends Thread {
       while (true) {
         System.out.println("Entered");
 
-        String parsedCommand = ProtocolParser.parseInput(dataInputStream);
+        String parsedCommand = ProtocolParser.parseInput(dataInputStream,serverInformation);
 
         System.out.printf("command received: %s\n", parsedCommand);
         String response = CommandHandler.handle(parsedCommand, serverInformation);
