@@ -38,7 +38,7 @@ public class ProtocolParser {
     private static String parseArray(DataInputStream inputStream) throws IOException {
         int arraySize = parseDigits(inputStream);
         return IntStream.range(0, arraySize)
-                .mapToObj(i -> parseInput(inputStream))
+                .mapToObj(i -> parseInput(inputStream, null))
                 .collect(Collectors.joining(" "));
     }
     private static String parseString(DataInputStream inputStream) throws IOException {
